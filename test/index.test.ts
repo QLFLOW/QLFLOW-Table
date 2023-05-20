@@ -6,7 +6,7 @@ import {
   表_全连接,
   表_内连接,
   表_列映射,
-  表_删除列,
+  表_列删除,
   表_取列,
   表_取列数据,
   表_取行,
@@ -28,6 +28,7 @@ import {
   表_交叉归类,
   表_创建列表,
   表_创建行表,
+  表_列改名,
 } from '../src/index'
 
 describe('表测试', () => {
@@ -168,9 +169,9 @@ describe('表测试', () => {
     const table2 = 表_创建表([{ age: 25 }, { age: 30 }, { age: 35 }])
     const mergedTable = 表_并接(table1, table2)
     const expectedTable = 表_创建表([
-      { id: 1, name: 'Alice', age: 25 },
-      { id: 2, name: 'Bob', age: 30 },
-      { id: 3, name: 'Charlie', age: 35 },
+      { A_id: 1, A_name: 'Alice', B_age: 25 },
+      { A_id: 2, A_name: 'Bob', B_age: 30 },
+      { A_id: 3, A_name: 'Charlie', B_age: 35 },
     ])
     expect(表_取表数据(mergedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
@@ -178,18 +179,25 @@ describe('表测试', () => {
     const table1 = 表_创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
+      { id: 2, name: 'Benjamin' },
       { id: 3, name: 'Charlie' },
+      { id: 4, name: 'Dasan' },
     ])
     const table2 = 表_创建表([
       { id: 1, age: 25 },
+      { id: 1, age: 26 },
       { id: 2, age: 30 },
-      { id: 4, age: 40 },
+      { id: 3, age: 40 },
+      { id: 5, age: 50 },
     ])
     const joinedTable = 表_左连接(table1, table2, 'id')
     const expectedTable = 表_创建表([
-      { id: 1, name: 'Alice', age: 25 },
-      { id: 2, name: 'Bob', age: 30 },
-      { id: 3, name: 'Charlie', age: null },
+      { id: 1, A_name: 'Alice', B_age: 25 },
+      { id: 1, A_name: 'Alice', B_age: 26 },
+      { id: 2, A_name: 'Bob', B_age: 30 },
+      { id: 2, A_name: 'Benjamin', B_age: 30 },
+      { id: 3, A_name: 'Charlie', B_age: 40 },
+      { id: 4, A_name: 'Dasan', B_age: null },
     ])
     expect(表_取表数据(joinedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
@@ -197,18 +205,25 @@ describe('表测试', () => {
     const table1 = 表_创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
+      { id: 2, name: 'Benjamin' },
       { id: 3, name: 'Charlie' },
+      { id: 4, name: 'Dasan' },
     ])
     const table2 = 表_创建表([
       { id: 1, age: 25 },
+      { id: 1, age: 26 },
       { id: 2, age: 30 },
-      { id: 4, age: 40 },
+      { id: 3, age: 40 },
+      { id: 5, age: 50 },
     ])
     const joinedTable = 表_右连接(table1, table2, 'id')
     const expectedTable = 表_创建表([
-      { id: 1, name: 'Alice', age: 25 },
-      { id: 2, name: 'Bob', age: 30 },
-      { id: 4, name: null, age: 40 },
+      { id: 1, A_name: 'Alice', B_age: 25 },
+      { id: 1, A_name: 'Alice', B_age: 26 },
+      { id: 2, A_name: 'Bob', B_age: 30 },
+      { id: 2, A_name: 'Benjamin', B_age: 30 },
+      { id: 3, A_name: 'Charlie', B_age: 40 },
+      { id: 5, A_name: null, B_age: 50 },
     ])
     expect(表_取表数据(joinedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
@@ -216,19 +231,26 @@ describe('表测试', () => {
     const table1 = 表_创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
+      { id: 2, name: 'Benjamin' },
       { id: 3, name: 'Charlie' },
+      { id: 4, name: 'Dasan' },
     ])
     const table2 = 表_创建表([
       { id: 1, age: 25 },
+      { id: 1, age: 26 },
       { id: 2, age: 30 },
-      { id: 4, age: 40 },
+      { id: 3, age: 40 },
+      { id: 5, age: 50 },
     ])
     const joinedTable = 表_全连接(table1, table2, 'id')
     const expectedTable = 表_创建表([
-      { id: 1, name: 'Alice', age: 25 },
-      { id: 2, name: 'Bob', age: 30 },
-      { id: 3, name: 'Charlie', age: null },
-      { id: 4, name: null, age: 40 },
+      { id: 1, A_name: 'Alice', B_age: 25 },
+      { id: 1, A_name: 'Alice', B_age: 26 },
+      { id: 2, A_name: 'Bob', B_age: 30 },
+      { id: 2, A_name: 'Benjamin', B_age: 30 },
+      { id: 3, A_name: 'Charlie', B_age: 40 },
+      { id: 4, A_name: 'Dasan', B_age: null },
+      { id: 5, A_name: null, B_age: 50 },
     ])
     expect(表_取表数据(joinedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
@@ -236,17 +258,24 @@ describe('表测试', () => {
     const table1 = 表_创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
+      { id: 2, name: 'Benjamin' },
       { id: 3, name: 'Charlie' },
+      { id: 4, name: 'Dasan' },
     ])
     const table2 = 表_创建表([
       { id: 1, age: 25 },
+      { id: 1, age: 26 },
       { id: 2, age: 30 },
-      { id: 4, age: 40 },
+      { id: 3, age: 40 },
+      { id: 5, age: 50 },
     ])
     const joinedTable = 表_内连接(table1, table2, 'id')
     const expectedTable = 表_创建表([
-      { id: 1, name: 'Alice', age: 25 },
-      { id: 2, name: 'Bob', age: 30 },
+      { id: 1, A_name: 'Alice', B_age: 25 },
+      { id: 1, A_name: 'Alice', B_age: 26 },
+      { id: 2, A_name: 'Bob', B_age: 30 },
+      { id: 2, A_name: 'Benjamin', B_age: 30 },
+      { id: 3, A_name: 'Charlie', B_age: 40 },
     ])
     expect(表_取表数据(joinedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
@@ -355,11 +384,26 @@ describe('表测试', () => {
     ]
     let table = 表_创建表(tableData)
     const columnToRemove = 'age'
-    const tableWithoutColumn = 表_删除列(table, columnToRemove)
+    const tableWithoutColumn = 表_列删除(table, columnToRemove)
     const expectedTable = 表_创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
       { id: 3, name: 'Charlie' },
+    ])
+    expect(表_取表数据(tableWithoutColumn)).to.deep.equal(表_取表数据(expectedTable))
+  })
+  it('表_列改名', () => {
+    let tableData = [
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Charlie', age: 35 },
+    ]
+    let table = 表_创建表(tableData)
+    const tableWithoutColumn = 表_列改名(table, 'name', 'name1')
+    const expectedTable = 表_创建表([
+      { id: 1, name1: 'Alice', age: 25 },
+      { id: 2, name1: 'Bob', age: 30 },
+      { id: 3, name1: 'Charlie', age: 35 },
     ])
     expect(表_取表数据(tableWithoutColumn)).to.deep.equal(表_取表数据(expectedTable))
   })

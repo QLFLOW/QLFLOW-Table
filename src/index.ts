@@ -148,10 +148,24 @@ export function 表_取列<A extends {}, B extends keyof A>(a: 表<A>, 列名: B
   }
 }
 
-export function 表_并接<A extends {}, B extends {}>(a: 表<A>, b: 表<B>): 表<A & B> {
-  var 行们: Array<A & B> = []
+type _加前缀<arr, A, T extends string> = arr extends []
+  ? {}
+  : arr extends [infer x, ...infer xs]
+  ? x extends string
+    ? x extends keyof A
+      ? Record<`${T}${x}`, A[x]> & _加前缀<xs, A, T>
+      : never
+    : never
+  : never
+type 加前缀<A, T extends string> = _加前缀<联合转元组<keyof A>, A, T>
+
+export function 表_并接<A extends {}, B extends {}>(a: 表<A>, b: 表<B>): 表<加前缀<A, 'A_'> & 加前缀<B, 'B_'>> {
+  var 行们: any = []
   for (var i = 0; i < Math.max(a[值].length, b[值].length); i++) {
-    行们.push({ ...a[值][i], ...b[值][i] })
+    var 行: any = {}
+    for (var a_name in a[值][i]) 行['A_' + a_name] = a[值][i][a_name]
+    for (var b_name in b[值][i]) 行['B_' + b_name] = b[值][i][b_name]
+    行们.push(行)
   }
   return { [值]: 行们 }
 }
@@ -159,41 +173,73 @@ export function 表_左连接<A extends {}, B extends {}>(
   左表: 表<A>,
   右表: 表<B>,
   链接字段: keyof A & keyof B,
-): 表<A & Partial<B>> {
-  const 结果: 表<A & Partial<B>> = { [值]: [] }
-
+): 表<加前缀<A, 'A_'> & 加前缀<Partial<B>, 'B_'>> {
+  const 结果: any = { [值]: [] }
   for (const 左项 of 左表[值]) {
     let 匹配项找到 = false
     for (const 右项 of 右表[值]) {
       if ((左项[链接字段] as any) === (右项[链接字段] as any)) {
-        结果[值].push({ ...右项, ...左项 })
+        结果[值].push({
+          ...Object.keys(左项)
+            .map((n) => ({ [n == 链接字段 ? n : 'A_' + n]: (左项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+          ...Object.keys(右项)
+            .filter((a) => a != 链接字段)
+            .map((n) => ({ ['B_' + n]: (右项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+        })
         匹配项找到 = true
       }
     }
     if (!匹配项找到) {
-      结果[值].push({ ...Object.fromEntries(Object.entries(右表[值][0]).map(([key]) => [key, null])), ...左项 })
+      结果[值].push({
+        ...Object.keys(左项)
+          .map((n) => ({ [n == 链接字段 ? n : 'A_' + n]: (左项 as any)[n] }))
+          .reduce((s, a) => Object.assign(s, a), {}),
+        ...Object.fromEntries(
+          Object.entries(右表[值][0])
+            .filter((a) => a[0] != 链接字段)
+            .map(([key]) => ['B_' + key, null]),
+        ),
+      })
     }
   }
-
   return 结果
 }
 export function 表_右连接<A extends {}, B extends {}>(
   左表: 表<A>,
   右表: 表<B>,
   链接字段: keyof A & keyof B,
-): 表<Partial<A> & B> {
-  const 结果: 表<Partial<A> & B> = { [值]: [] }
+): 表<加前缀<Partial<A>, 'A_'> & 加前缀<B, 'B_'>> {
+  const 结果: any = { [值]: [] }
 
   for (const 右项 of 右表[值]) {
     let 匹配项找到 = false
     for (const 左项 of 左表[值]) {
-      if ((左项[链接字段] as any) === (右项[链接字段] as any)) {
-        结果[值].push({ ...左项, ...右项 })
+      if ((右项[链接字段] as any) === (左项[链接字段] as any)) {
+        结果[值].push({
+          ...Object.keys(左项)
+            .filter((a) => a != 链接字段)
+            .map((n) => ({ ['A_' + n]: (左项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+          ...Object.keys(右项)
+            .map((n) => ({ [n == 链接字段 ? n : 'B_' + n]: (右项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+        })
         匹配项找到 = true
       }
     }
     if (!匹配项找到) {
-      结果[值].push({ ...Object.fromEntries(Object.entries(左表[值][0]).map(([key]) => [key, null])), ...右项 })
+      结果[值].push({
+        ...Object.fromEntries(
+          Object.entries(左表[值][0])
+            .filter((a) => a[0] != 链接字段)
+            .map(([key]) => ['A_' + key, null]),
+        ),
+        ...Object.keys(右项)
+          .map((n) => ({ [n == 链接字段 ? n : 'B_' + n]: (右项 as any)[n] }))
+          .reduce((s, a) => Object.assign(s, a), {}),
+      })
     }
   }
 
@@ -203,22 +249,35 @@ export function 表_全连接<A extends {}, B extends {}>(
   左表: 表<A>,
   右表: 表<B>,
   链接字段: keyof A & keyof B,
-): 表<Partial<A> & Partial<B>> {
-  const 结果: 表<Partial<A> & Partial<B>> = { [值]: [] }
+): 表<加前缀<Partial<A>, 'A_'> & 加前缀<Partial<B>, 'B_'>> {
+  const 结果: any = { [值]: [] }
 
   for (const 左项 of 左表[值]) {
     let 匹配项找到 = false
     for (const 右项 of 右表[值]) {
       if ((左项[链接字段] as any) === (右项[链接字段] as any)) {
-        结果[值].push({ ...左项, ...右项 })
+        结果[值].push({
+          ...Object.keys(左项)
+            .map((n) => ({ [n == 链接字段 ? n : 'A_' + n]: (左项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+          ...Object.keys(右项)
+            .filter((a) => a != 链接字段)
+            .map((n) => ({ ['B_' + n]: (右项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+        })
         匹配项找到 = true
       }
     }
     if (!匹配项找到) {
       结果[值].push({
-        ...左项,
-        ...Object.fromEntries(Object.entries(右表[值][0]).map(([key]) => [key, null])),
-        ...左项,
+        ...Object.keys(左项)
+          .map((n) => ({ [n == 链接字段 ? n : 'A_' + n]: (左项 as any)[n] }))
+          .reduce((s, a) => Object.assign(s, a), {}),
+        ...Object.fromEntries(
+          Object.entries(右表[值][0])
+            .filter((a) => a[0] != 链接字段)
+            .map(([key]) => ['B_' + key, null]),
+        ),
       })
     }
   }
@@ -228,11 +287,19 @@ export function 表_全连接<A extends {}, B extends {}>(
     for (const 左项 of 左表[值]) {
       if ((右项[链接字段] as any) === (左项[链接字段] as any)) {
         匹配项找到 = true
-        break
       }
     }
     if (!匹配项找到) {
-      结果[值].push({ ...Object.fromEntries(Object.entries(左表[值][0]).map(([key]) => [key, null])), ...右项 })
+      结果[值].push({
+        ...Object.fromEntries(
+          Object.entries(左表[值][0])
+            .filter((a) => a[0] != 链接字段)
+            .map(([key]) => ['A_' + key, null]),
+        ),
+        ...Object.keys(右项)
+          .map((n) => ({ [n == 链接字段 ? n : 'B_' + n]: (右项 as any)[n] }))
+          .reduce((s, a) => Object.assign(s, a), {}),
+      })
     }
   }
 
@@ -242,15 +309,21 @@ export function 表_内连接<A extends {}, B extends {}>(
   左表: 表<A>,
   右表: 表<B>,
   链接字段: keyof A & keyof B,
-): 表<A & B> {
-  const 结果: 表<A & B> = {
-    [值]: [],
-  }
+): 表<加前缀<A, 'A_'> & 加前缀<B, 'B_'>> {
+  const 结果: any = { [值]: [] }
 
   for (const 左项 of 左表[值]) {
     for (const 右项 of 右表[值]) {
       if ((左项[链接字段] as any) === (右项[链接字段] as any)) {
-        结果[值].push({ ...左项, ...右项 })
+        结果[值].push({
+          ...Object.keys(左项)
+            .map((n) => ({ [n == 链接字段 ? n : 'A_' + n]: (左项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+          ...Object.keys(右项)
+            .filter((a) => a != 链接字段)
+            .map((n) => ({ ['B_' + n]: (右项 as any)[n] }))
+            .reduce((s, a) => Object.assign(s, a), {}),
+        })
       }
     }
   }
@@ -335,7 +408,7 @@ export function 表_交叉归类<A extends {}, F extends Record<string | number,
   return 结果
 }
 
-export function 表_删除列<A extends {}, 列名类型 extends keyof A>(a: 表<A>, 列名: 列名类型): 表<Omit<A, 列名类型>> {
+export function 表_列删除<A extends {}, 列名类型 extends keyof A>(a: 表<A>, 列名: 列名类型): 表<Omit<A, 列名类型>> {
   const 结果: 表<Omit<A, 列名类型>> = { [值]: [] }
   for (const 行 of a[值]) {
     const 新行 = 深克隆(行)
@@ -343,6 +416,20 @@ export function 表_删除列<A extends {}, 列名类型 extends keyof A>(a: 表
     结果[值].push(新行)
   }
   return 结果
+}
+export function 表_列改名<A extends {}, 列名类型 extends keyof A, 新列名类型 extends string>(
+  a: 表<A>,
+  列名: 列名类型,
+  新列名: 新列名类型,
+): 表<Omit<A, 列名类型> & Record<新列名类型, A[列名类型]>> {
+  const 结果: 表<Omit<A, 列名类型>> = { [值]: [] }
+  for (const 行 of a[值]) {
+    const 新行: any = 深克隆(行)
+    新行[新列名] = 新行[列名]
+    delete 新行[列名]
+    结果[值].push(新行)
+  }
+  return 结果 as any
 }
 export function 表_列映射<A extends {}, 列名类型 extends keyof A, C extends 基础类型>(
   a: 表<A>,
