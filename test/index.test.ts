@@ -22,8 +22,10 @@ import {
   表_取列数,
   表_取列名们,
   表_表映射,
-  表_行分组,
+  表_分组,
   表_表排序,
+  表_交叉分组,
+  表_交叉归类,
 } from '../src/index'
 
 describe('表测试', () => {
@@ -271,14 +273,49 @@ describe('表测试', () => {
     ])
     expect(表_取表数据(mappedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
-  it('表_行分组', () => {
+  it('表_分组', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
       { id: 3, name: 'Charlie', age: 35 },
     ]
     let table = 表_创建表(tableData)
-    const 分组 = 表_行分组(table, { a: (x) => x.age <= 30, b: (x) => x.age >= 30 })
+    const 分组 = 表_分组(table, [(x) => x.age <= 30, (x) => x.age >= 30])
+    const expectedTable1 = 表_创建表([
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+    ])
+    const expectedTable2 = 表_创建表([{ id: 3, name: 'Charlie', age: 35 }])
+    expect(表_取表数据(expectedTable1)).to.deep.equal(表_取表数据(分组[0]))
+    expect(表_取表数据(expectedTable2)).to.deep.equal(表_取表数据(分组[1]))
+  })
+  it('表_交叉分组', () => {
+    let tableData = [
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Charlie', age: 35 },
+    ]
+    let table = 表_创建表(tableData)
+    const 分组 = 表_交叉分组(table, [(x) => x.age <= 30, (x) => x.age >= 30])
+    const expectedTable1 = 表_创建表([
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+    ])
+    const expectedTable2 = 表_创建表([
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Charlie', age: 35 },
+    ])
+    expect(表_取表数据(expectedTable1)).to.deep.equal(表_取表数据(分组[0]))
+    expect(表_取表数据(expectedTable2)).to.deep.equal(表_取表数据(分组[1]))
+  })
+  it('表_交叉归类', () => {
+    let tableData = [
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Charlie', age: 35 },
+    ]
+    let table = 表_创建表(tableData)
+    const 分组 = 表_交叉归类(table, { a: (x) => x.age <= 30, b: (x) => x.age >= 30 })
     const expectedTable1 = 表_创建表([
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },

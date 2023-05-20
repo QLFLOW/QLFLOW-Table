@@ -22,14 +22,15 @@ type _表_取行数据_类型<A, arr> = arr extends []
     : never
   : never
 type 表_取行数据_类型<A> = _表_取行数据_类型<A, 联合转元组<keyof A>>
-type _表_行分组_返回类型<arr, B> = arr extends []
+type _表_分组_返回类型<arr, B> = arr extends []
   ? {}
   : arr extends [infer x, ...infer xs]
   ? x extends string | number
-    ? Record<x, B> & _表_行分组_返回类型<xs, B>
+    ? Record<x, B> & _表_分组_返回类型<xs, B>
     : never
   : never
-type 表_行分组_返回类型<A, B> = _表_行分组_返回类型<联合转元组<keyof A>, B>
+type 表_分组_返回类型<A, B> = _表_分组_返回类型<联合转元组<keyof A>, B>
+type 固定映射<Arr, A> = Arr extends [] ? [] : Arr extends [infer x, ...infer xs] ? [A, ...固定映射<xs, A>] : never
 
 function 读xlsx<A extends {}>(路径: string): A[] {
   const workbook = XLSX.readFile(路径)
@@ -232,37 +233,71 @@ export function 表_行映射<A extends {}, C extends _C, _C extends {} = 创建
   新表[值] = 新表[值].map(函数)
   return 新表
 }
-export function 表_行分组<A extends {}, F extends Record<string | number, (x: A) => boolean>>(
+
+export function 表_分组<A extends {}, F extends ((x: A) => boolean)[]>(
+  a: 表<A>,
+  函数们: [...F],
+): 固定映射<[...F], 表<A>> {
+  var 数据 = a[值]
+
+  var 结果: 表<A>[] = 函数们.map((_) => ({ [值]: [] }))
+  for (var 行数据 of 数据) {
+    for (var i = 0; i < 函数们.length; i++) {
+      var 当前函数 = 函数们[i]
+      if (当前函数(深克隆(行数据))) {
+        结果[i][值].push(深克隆(行数据))
+        break
+      }
+    }
+  }
+  return 结果 as any
+}
+export function 表_交叉分组<A extends {}, F extends ((x: A) => boolean)[]>(
+  a: 表<A>,
+  函数们: [...F],
+): 固定映射<[...F], 表<A>> {
+  var 数据 = a[值]
+
+  var 结果: 表<A>[] = 函数们.map((_) => ({ [值]: [] }))
+  for (var 行数据 of 数据) {
+    for (var i = 0; i < 函数们.length; i++) {
+      var 当前函数 = 函数们[i]
+      if (当前函数(深克隆(行数据))) {
+        结果[i][值].push(深克隆(行数据))
+      }
+    }
+  }
+  return 结果 as any
+}
+export function 表_交叉归类<A extends {}, F extends Record<string | number, (x: A) => boolean>>(
   a: 表<A>,
   函数: F,
-): 表_行分组_返回类型<F, 表<A>> {
+): 表_分组_返回类型<F, 表<A>> {
   var key们 = Object.keys(函数)
-  var 新数据 = 深克隆(a[值])
+  var 数据 = a[值]
 
   var 结果 = {} as any
   for (var k of key们) {
     结果[k] = { [值]: [] }
   }
-  for (var 行数据 of 新数据) {
+  for (var 行数据 of 数据) {
     for (var k of key们) {
       var 当前函数 = 函数[k]
-      if (当前函数(行数据)) 结果[k][值].push(行数据)
+      if (当前函数(深克隆(行数据))) {
+        结果[k][值].push(深克隆(行数据))
+      }
     }
   }
   return 结果
 }
 
 export function 表_删除列<A extends {}, 列名类型 extends keyof A>(a: 表<A>, 列名: 列名类型): 表<Omit<A, 列名类型>> {
-  const 结果: 表<Omit<A, 列名类型>> = {
-    [值]: [],
-  }
-
+  const 结果: 表<Omit<A, 列名类型>> = { [值]: [] }
   for (const 行 of a[值]) {
     const 新行 = 深克隆(行)
     delete 新行[列名]
     结果[值].push(新行)
   }
-
   return 结果
 }
 export function 表_列映射<A extends {}, 列名类型 extends keyof A, C extends 基础类型>(
@@ -280,12 +315,14 @@ export function 表_列映射<A extends {}, 列名类型 extends keyof A, C exte
   return 结果
 }
 
-export function 表_表映射<A extends {}, B extends {}>(a: 表<A>, f: (a: A[]) => B[]): 表<B> {
+export function 表_表映射<A extends {}, B extends _B, _B extends {} = 创建表_类型检查<B>>(
+  a: 表<A>,
+  f: (a: A[]) => B[],
+): 表<B> {
   var 新表 = 表克隆(a)
   var 新结果 = f(新表[值])
   return { [值]: 新结果 }
 }
-
 export function 表_表排序<A extends {}>(a: 表<A>, f: (a: A, b: A) => boolean): 表<A> {
-  return 表_表映射(a, (x) => x.sort((a, b) => (f(a, b) ? 1 : -1)))
+  return 表_表映射(a, (x) => x.sort((a, b) => (f(a, b) ? 1 : -1)) as any) as any
 }
