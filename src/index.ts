@@ -57,6 +57,17 @@ type 表_创建行表_计算返回类型<A, B> = A extends []
     : never
   : never
 type 表_创建行表<A, B> = 数组长度相等<A, B> extends true ? A : never
+type 表_列改名_类型约束<A, N> = N extends keyof A ? never : N
+type _加前缀<arr, A, T extends string> = arr extends []
+  ? {}
+  : arr extends [infer x, ...infer xs]
+  ? x extends string
+    ? x extends keyof A
+      ? Record<`${T}${x}`, A[x]> & _加前缀<xs, A, T>
+      : never
+    : never
+  : never
+type 加前缀<A, T extends string> = _加前缀<联合转元组<keyof A>, A, T>
 
 function 读xlsx<A extends {}>(路径: string): A[] {
   const workbook = XLSX.readFile(路径)
@@ -147,17 +158,6 @@ export function 表_取列<A extends {}, B extends keyof A>(a: 表<A>, 列名: B
     [值]: a[值].map((x) => 列名.map((n) => ({ [n]: x[n] })).reduce((s, a) => Object.assign(s, a), {})) as any,
   }
 }
-
-type _加前缀<arr, A, T extends string> = arr extends []
-  ? {}
-  : arr extends [infer x, ...infer xs]
-  ? x extends string
-    ? x extends keyof A
-      ? Record<`${T}${x}`, A[x]> & _加前缀<xs, A, T>
-      : never
-    : never
-  : never
-type 加前缀<A, T extends string> = _加前缀<联合转元组<keyof A>, A, T>
 
 export function 表_并接<A extends {}, B extends {}>(a: 表<A>, b: 表<B>): 表<加前缀<A, 'A_'> & 加前缀<B, 'B_'>> {
   var 行们: any = []
@@ -417,12 +417,12 @@ export function 表_列删除<A extends {}, 列名类型 extends keyof A>(a: 表
   }
   return 结果
 }
-export function 表_列改名<A extends {}, 列名类型 extends keyof A, 新列名类型 extends string>(
+export function 表_列改名<A extends {}, C extends keyof A, N extends _C, _C extends string = 表_列改名_类型约束<A, N>>(
   a: 表<A>,
-  列名: 列名类型,
-  新列名: 新列名类型,
-): 表<Omit<A, 列名类型> & Record<新列名类型, A[列名类型]>> {
-  const 结果: 表<Omit<A, 列名类型>> = { [值]: [] }
+  列名: C,
+  新列名: N,
+): 表<Omit<A, C> & Record<N, A[C]>> {
+  const 结果: 表<Omit<A, C>> = { [值]: [] }
   for (const 行 of a[值]) {
     const 新行: any = 深克隆(行)
     新行[新列名] = 新行[列名]
