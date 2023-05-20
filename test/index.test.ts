@@ -26,6 +26,8 @@ import {
   表_表排序,
   表_交叉分组,
   表_交叉归类,
+  表_创建列表,
+  表_创建行表,
 } from '../src/index'
 
 describe('表测试', () => {
@@ -36,6 +38,16 @@ describe('表测试', () => {
       { id: 3, name: 'Charlie', age: 35 },
     ]
     const createdTable = 表_创建表(tableData)
+    expect(表_取表数据(createdTable)).to.deep.equal(tableData)
+  })
+  it('表_创建行表', () => {
+    let tableData = [{ id: 1, name: 'Alice', age: 25 }]
+    const createdTable = 表_创建行表(['id', 'name', 'age'], [1, 'Alice', 25])
+    expect(表_取表数据(createdTable)).to.deep.equal(tableData)
+  })
+  it('表_创建列表', () => {
+    let tableData = [{ id: 1 }, { id: 2 }, { id: 3 }]
+    const createdTable = 表_创建列表([1, 2, 3], 'id')
     expect(表_取表数据(createdTable)).to.deep.equal(tableData)
   })
   it('表_从xlsx创建表', () => {

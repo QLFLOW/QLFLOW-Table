@@ -31,6 +31,25 @@ type _表_分组_返回类型<arr, B> = arr extends []
   : never
 type 表_分组_返回类型<A, B> = _表_分组_返回类型<联合转元组<keyof A>, B>
 type 固定映射<Arr, A> = Arr extends [] ? [] : Arr extends [infer x, ...infer xs] ? [A, ...固定映射<xs, A>] : never
+type 数组长度相等<A, B> = A extends Array<any>
+  ? B extends Array<any>
+    ? A['length'] extends B['length']
+      ? true
+      : false
+    : false
+  : false
+type 表_创建行表_计算返回类型<A, B> = A extends []
+  ? {}
+  : B extends []
+  ? {}
+  : A extends [infer a, ...infer as]
+  ? B extends [infer b, ...infer bs]
+    ? b extends string | number
+      ? Record<b, a> & 表_创建行表_计算返回类型<as, bs>
+      : never
+    : never
+  : never
+type 表_创建行表<A, B> = 数组长度相等<A, B> extends true ? A : never
 
 function 读xlsx<A extends {}>(路径: string): A[] {
   const workbook = XLSX.readFile(路径)
@@ -67,6 +86,17 @@ export type 表<A extends {}> = {
 export function 表_创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]): 表<A> {
   return { [值]: data }
 }
+export function 表_创建行表<A extends _A, B extends (string | number)[], _A extends 基础类型[] = 表_创建行表<A, B>>(
+  列名: [...B],
+  data: [...A],
+): 表<表_创建行表_计算返回类型<A, B>> {
+  var _列名 = 深克隆(列名)
+  var _data = 深克隆(data)
+  return { [值]: [_列名.map((n, i) => ({ [n]: _data[i] })).reduce((s, a) => Object.assign(s, a), {})] } as any
+}
+export function 表_创建列表<A extends 基础类型, B extends string | number>(data: A[], 列名: B): 表<Record<B, A>> {
+  return { [值]: 深克隆(data).map((x) => ({ [列名]: x })) } as any
+}
 export function 表_从xlsx创建表<A extends B, B extends {} = 创建表_类型检查<A>>(路径: string): 表<A> {
   var 数据 = 读xlsx<A>(路径)
   return { [值]: 数据 }
@@ -91,7 +121,7 @@ export function 表_取列数<A extends {}>(a: 表<A>): number {
   return Object.keys(a[值][0]).length
 }
 
-export function 表_取列名们<A extends {}>(a: 表<A>): string[] {
+export function 表_取列名们<A extends {}>(a: 表<A>): (string | number)[] {
   return Object.keys(a[值][0])
 }
 
