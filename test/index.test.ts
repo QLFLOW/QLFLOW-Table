@@ -59,6 +59,14 @@ describe('表测试', () => {
     const createdTable = 表_从xlsx创建表(path.resolve(__dirname, './file.xlsx'))
     expect(表_取表数据(createdTable)).to.deep.equal(tableData)
   })
+  it('表_创建高维表', () => {
+    const createdTable = 表_创建表([
+      { id: 1, data: 表_创建表([{ name: 'Alice', age: 25 }]) },
+      { id: 2, data: 表_创建表([{ name: 'Bob', age: 30 }]) },
+      { id: 3, data: 表_创建表([{ name: 'Charlie', age: 35 }]) },
+    ])
+    expect(表_取表数据(表_取列数据(createdTable, 'data')[1])).to.deep.equal([{ name: 'Bob', age: 30 }])
+  })
   it('表_取行数据', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },

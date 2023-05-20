@@ -1,8 +1,15 @@
 import { 联合转元组, 错误 } from '@lsby/ts_type_fun'
 import * as XLSX from 'xlsx'
-import * as R from 'ramda'
 
-type 基础类型 = string | number | boolean | null | undefined | 基础类型[] | { [key: string | number]: 基础类型 }
+type 基础类型 =
+  | string
+  | number
+  | bigint
+  | boolean
+  | null
+  | undefined
+  | 基础类型[]
+  | { [key: string | number]: 基础类型 }
 
 type _创建表_类型检查<Obj, Key> = Key extends []
   ? Obj
@@ -70,11 +77,18 @@ function 读xlsx<A extends {}>(路径: string): A[] {
 
   return objectsArray
 }
-function 深克隆<A>(originalObject: A): A {
-  return R.clone(originalObject)
-}
-function 表克隆<A extends {}>(a: 表<A>): 表<A> {
-  return { [值]: 深克隆(a[值]) }
+function 深克隆<T>(obj: T): T {
+  if (typeof obj !== 'object' || obj === null || obj === undefined) return obj
+  if (Array.isArray(obj)) return obj.map((item) => 深克隆(item)) as any
+
+  const clonedObj: any = {}
+  const keys = Object.keys(obj) as (keyof typeof obj)[]
+  const symbols = Object.getOwnPropertySymbols(obj) as (keyof typeof obj)[]
+
+  for (const key of keys) clonedObj[key] = 深克隆(obj[key])
+  for (const symbol of symbols) clonedObj[symbol] = 深克隆(obj[symbol])
+
+  return clonedObj as T
 }
 
 const 值: unique symbol = Symbol('值')
@@ -259,7 +273,7 @@ export function 表_行映射<A extends {}, C extends _C, _C extends {} = 创建
   a: 表<A>,
   函数: (a: A) => C,
 ): 表<C> {
-  var 新表 = 表克隆(a) as any
+  var 新表 = 深克隆(a) as any
   新表[值] = 新表[值].map(函数)
   return 新表
 }
@@ -349,7 +363,7 @@ export function 表_表映射<A extends {}, B extends _B, _B extends {} = 创建
   a: 表<A>,
   f: (a: A[]) => B[],
 ): 表<B> {
-  var 新表 = 表克隆(a)
+  var 新表 = 深克隆(a)
   var 新结果 = f(新表[值])
   return { [值]: 新结果 }
 }
