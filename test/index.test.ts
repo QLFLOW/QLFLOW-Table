@@ -343,8 +343,8 @@ describe('表测试', () => {
       { id: 3, name: 'Charlie', age: 35 },
     ]
     let table = 表_创建表(tableData)
-    const mappedTable1 = 表_表排序(table, (a, b) => (b.id - a.id > 0 ? true : false))
-    const mappedTable2 = 表_表排序(table, (a, b) => (a.id - b.id > 0 ? true : false))
+    const mappedTable1 = 表_表排序(table, (a, b) => b.id > a.id)
+    const mappedTable2 = 表_表排序(table, (a, b) => a.id > b.id)
     const expectedTable1 = 表_创建表([
       { id: 3, name: 'Charlie', age: 35 },
       { id: 2, name: 'Bob', age: 30 },
