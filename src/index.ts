@@ -22,6 +22,14 @@ type _表_取行数据_类型<A, arr> = arr extends []
     : never
   : never
 type 表_取行数据_类型<A> = _表_取行数据_类型<A, 联合转元组<keyof A>>
+type _表_行分组_返回类型<arr, B> = arr extends []
+  ? {}
+  : arr extends [infer x, ...infer xs]
+  ? x extends string | number
+    ? Record<x, B> & _表_行分组_返回类型<xs, B>
+    : never
+  : never
+type 表_行分组_返回类型<A, B> = _表_行分组_返回类型<联合转元组<keyof A>, B>
 
 function 读xlsx<A extends {}>(路径: string): A[] {
   const workbook = XLSX.readFile(路径)
@@ -55,10 +63,10 @@ export type 表<A extends {}> = {
   [值]: A[]
 }
 
-export function 创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]): 表<A> {
+export function 表_创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]): 表<A> {
   return { [值]: data }
 }
-export function 创建表_从xlsx<A extends B, B extends {} = 创建表_类型检查<A>>(路径: string): 表<A> {
+export function 表_从xlsx创建表<A extends B, B extends {} = 创建表_类型检查<A>>(路径: string): 表<A> {
   var 数据 = 读xlsx<A>(路径)
   return { [值]: 数据 }
 }
@@ -73,6 +81,17 @@ export function 表_取列数据<A extends {}, B extends keyof A>(a: 表<A>, 列
 }
 export function 表_取表数据<A extends {}>(a: 表<A>): A[] {
   return 深克隆(a[值])
+}
+
+export function 表_取行数<A extends {}>(a: 表<A>): number {
+  return a[值].length
+}
+export function 表_取列数<A extends {}>(a: 表<A>): number {
+  return Object.keys(a[值][0]).length
+}
+
+export function 表_取列名们<A extends {}>(a: 表<A>): string[] {
+  return Object.keys(a[值][0])
 }
 
 export function 表_取行<A extends {}>(a: 表<A>, ns: number[]): 表<A> {
@@ -213,6 +232,25 @@ export function 表_行映射<A extends {}, C extends _C, _C extends {} = 创建
   新表[值] = 新表[值].map(函数)
   return 新表
 }
+export function 表_行分组<A extends {}, F extends Record<string | number, (x: A) => boolean>>(
+  a: 表<A>,
+  函数: F,
+): 表_行分组_返回类型<F, 表<A>> {
+  var key们 = Object.keys(函数)
+  var 新数据 = 深克隆(a[值])
+
+  var 结果 = {} as any
+  for (var k of key们) {
+    结果[k] = { [值]: [] }
+  }
+  for (var 行数据 of 新数据) {
+    for (var k of key们) {
+      var 当前函数 = 函数[k]
+      if (当前函数(行数据)) 结果[k][值].push(行数据)
+    }
+  }
+  return 结果
+}
 
 export function 表_删除列<A extends {}, 列名类型 extends keyof A>(a: 表<A>, 列名: 列名类型): 表<Omit<A, 列名类型>> {
   const 结果: 表<Omit<A, 列名类型>> = {
@@ -240,4 +278,14 @@ export function 表_列映射<A extends {}, 列名类型 extends keyof A, C exte
     结果[值].push(新行)
   }
   return 结果
+}
+
+export function 表_表映射<A extends {}, B extends {}>(a: 表<A>, f: (a: A[]) => B[]): 表<B> {
+  var 新表 = 表克隆(a)
+  var 新结果 = f(新表[值])
+  return { [值]: 新结果 }
+}
+
+export function 表_表排序<A extends {}>(a: 表<A>, f: (a: A, b: A) => boolean): 表<A> {
+  return 表_表映射(a, (x) => x.sort((a, b) => (f(a, b) ? 1 : -1)))
 }
