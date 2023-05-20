@@ -2,7 +2,7 @@ import { 联合转元组, 错误 } from '@lsby/ts_type_fun'
 import * as XLSX from 'xlsx'
 import * as R from 'ramda'
 
-type 基础类型 = string | number | boolean | null | undefined
+type 基础类型 = string | number | boolean | null | undefined | 基础类型[] | { [key: string | number]: 基础类型 }
 
 type _创建表_类型检查<Obj, Key> = Key extends []
   ? Obj
@@ -46,7 +46,7 @@ function 深克隆<A>(originalObject: A): A {
   return R.clone(originalObject)
 }
 function 表克隆<A extends {}>(a: 表<A>): 表<A> {
-  return { [值]: JSON.parse(JSON.stringify(a[值])) }
+  return { [值]: 深克隆(a[值]) }
 }
 
 const 值: unique symbol = Symbol('值')
@@ -72,7 +72,7 @@ export function 表_取列数据<A extends {}, B extends keyof A>(a: 表<A>, 列
   return 深克隆(a[值].map((x) => x[列名]))
 }
 export function 表_取表数据<A extends {}>(a: 表<A>): A[] {
-  return 表克隆(a)[值]
+  return 深克隆(a[值])
 }
 
 export function 表_取行<A extends {}>(a: 表<A>, ns: number[]): 表<A> {
