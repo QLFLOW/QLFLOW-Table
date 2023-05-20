@@ -68,6 +68,13 @@ type _加前缀<arr, A, T extends string> = arr extends []
     : never
   : never
 type 加前缀<A, T extends string> = _加前缀<联合转元组<keyof A>, A, T>
+type 表_取列_计算返回<A, arr> = arr extends []
+  ? {}
+  : arr extends [infer x, ...infer xs]
+  ? x extends keyof A
+    ? Record<x, A[x]> & 表_取列_计算返回<A, xs>
+    : never
+  : never
 
 function 读xlsx<A extends {}>(路径: string): A[] {
   const workbook = XLSX.readFile(路径)
@@ -153,7 +160,7 @@ export function 表_取列名们<A extends {}>(a: 表<A>): (string | number)[] {
 export function 表_取行<A extends {}>(a: 表<A>, ns: number[]): 表<A> {
   return { [值]: a[值].filter((_, i) => ns.includes(i)) }
 }
-export function 表_取列<A extends {}, B extends keyof A>(a: 表<A>, 列名: B[]): 表<A> {
+export function 表_取列<A extends {}, B extends keyof A>(a: 表<A>, 列名: B[]): 表<表_取列_计算返回<A, 联合转元组<B>>> {
   return {
     [值]: a[值].map((x) => 列名.map((n) => ({ [n]: x[n] })).reduce((s, a) => Object.assign(s, a), {})) as any,
   }
@@ -456,4 +463,12 @@ export function 表_表映射<A extends {}, B extends _B, _B extends {} = 创建
 }
 export function 表_表排序<A extends {}>(a: 表<A>, f: (a: A, b: A) => boolean): 表<A> {
   return 表_表映射(a, (x) => x.sort((a, b) => (f(a, b) ? 1 : -1)) as any) as any
+}
+export function 表_表去重<A extends {}, B extends keyof A>(a: 表<A>, 列们: B[]): 表<A> {
+  const 新表: 表<A> = { [值]: [] }
+  for (const 行 of a[值]) {
+    const 重复 = 新表[值].some((已有行) => 列们.every((列) => 行[列] === 已有行[列]))
+    if (!重复) 新表[值].push(行)
+  }
+  return 新表
 }

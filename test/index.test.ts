@@ -29,6 +29,7 @@ import {
   表_创建列表,
   表_创建行表,
   表_列改名,
+  表_表去重,
 } from '../src/index'
 
 describe('表测试', () => {
@@ -156,8 +157,7 @@ describe('表测试', () => {
       { id: 3, name: 'Charlie', age: 35 },
     ]
     let table = 表_创建表(tableData)
-    const columnIndex = 'name'
-    const column = 表_取列(table, [columnIndex])
+    const column = 表_取列(table, ['name'])
     expect(表_取表数据(column)).to.deep.equal([{ name: 'Alice' }, { name: 'Bob' }, { name: 'Charlie' }])
   })
   it('表_表并接', () => {
@@ -458,5 +458,19 @@ describe('表测试', () => {
     ])
     expect(表_取表数据(mappedTable1)).to.deep.equal(表_取表数据(expectedTable1))
     expect(表_取表数据(mappedTable2)).to.deep.equal(表_取表数据(expectedTable2))
+  })
+  it('表_表去重', () => {
+    let tableData = [
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Alice', age: 25 },
+    ]
+    let table = 表_创建表(tableData)
+    const mappedTable = 表_表去重(table, ['name', 'age'])
+    const expectedTable = 表_创建表([
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+    ])
+    expect(表_取表数据(mappedTable)).to.deep.equal(表_取表数据(expectedTable))
   })
 })
