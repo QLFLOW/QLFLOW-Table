@@ -324,6 +324,11 @@ export class 表<A extends {}> {
     var 数据2 = 数据.slice(n)
     return [new 表(数据1), new 表(数据2)]
   }
+  截取(n: number): 表<A> {
+    var 数据 = 深克隆(this.data)
+    var 数据1 = 数据.slice(0, n)
+    return new 表(数据1)
+  }
   筛选(条件: (a: A) => boolean) {
     var 保留的 = this.data.map((x, i) => (条件(x) ? i : -1)).filter((a) => a != -1)
     return this.取行(保留的)

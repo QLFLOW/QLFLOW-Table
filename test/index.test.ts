@@ -290,6 +290,19 @@ describe('表测试', () => {
     expect(t1.取表数据()).to.deep.equal(expectedTable1.取表数据())
     expect(t2.取表数据()).to.deep.equal(expectedTable2.取表数据())
   })
+  it('截取', () => {
+    const table1 = 表.创建表([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+      { id: 3, name: 'Charlie' },
+    ])
+    const t1 = table1.截取(2)
+    const expectedTable1 = 表.创建表([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ])
+    expect(t1.取表数据()).to.deep.equal(expectedTable1.取表数据())
+  })
   it('筛选', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
