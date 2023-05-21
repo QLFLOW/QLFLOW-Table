@@ -30,6 +30,7 @@ import {
   表_创建行表,
   表_列改名,
   表_表去重,
+  表_取表矩阵数据,
 } from '../src/index'
 
 describe('表测试', () => {
@@ -111,6 +112,20 @@ describe('表测试', () => {
     let table = 表_创建表(tableData)
     const tableDataResult = 表_取表数据(table)
     expect(tableDataResult).to.deep.equal(tableData)
+  })
+  it('表_取表矩阵数据', () => {
+    let tableData = [
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Charlie', age: 35 },
+    ]
+    let table = 表_创建表(tableData)
+    const tableDataResult = 表_取表矩阵数据(table)
+    expect(tableDataResult).to.deep.equal([
+      [1, 'Alice', 25],
+      [2, 'Bob', 30],
+      [3, 'Charlie', 35],
+    ])
   })
   it('表_取行数', () => {
     let tableData = [
