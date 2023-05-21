@@ -120,7 +120,7 @@ describe('表测试', () => {
       { id: 3, name: 'Charlie', age: 35 },
     ]
     let table = 表_创建表(tableData)
-    const tableDataResult = 表_取表矩阵数据(table)
+    const tableDataResult = 表_取表矩阵数据(table, ['id', 'name', 'age'])
     expect(tableDataResult).to.deep.equal([
       [1, 'Alice', 25],
       [2, 'Bob', 30],

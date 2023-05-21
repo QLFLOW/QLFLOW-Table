@@ -145,8 +145,8 @@ export function 表_取列数据<A extends {}, B extends keyof A>(a: 表<A>, 列
 export function 表_取表数据<A extends {}>(a: 表<A>): A[] {
   return 深克隆(a[值])
 }
-export function 表_取表矩阵数据<A extends {}>(a: 表<A>): 表_取行数据_类型<A>[] {
-  return 深克隆(a[值]).map((a) => Object.values(a)) as any
+export function 表_取表矩阵数据<A extends {}, 列名 extends keyof A>(a: 表<A>, 列: 列名[]): 表_取行数据_类型<A>[] {
+  return 深克隆(a[值]).map((a) => 列.map((x) => a[x])) as any
 }
 
 export function 表_取行数<A extends {}>(a: 表<A>): number {
