@@ -318,6 +318,12 @@ export class 表<A extends {}> {
     const 结果: 表<A> = new 表([...深克隆(this.data), ...深克隆(b.data)])
     return 结果
   }
+  切分(n: number): [表<A>, 表<A>] {
+    var 数据 = 深克隆(this.data)
+    var 数据1 = 数据.slice(0, n)
+    var 数据2 = 数据.slice(n)
+    return [new 表(数据1), new 表(数据2)]
+  }
   筛选(条件: (a: A) => boolean) {
     var 保留的 = this.data.map((x, i) => (条件(x) ? i : -1)).filter((a) => a != -1)
     return this.取行(保留的)
@@ -417,10 +423,11 @@ export class 表<A extends {}> {
     var 新结果 = f(新表.data)
     return new 表(新结果)
   }
-  表排序(f: (a: A, b: A) => boolean): 表<A> {
+
+  排序(f: (a: A, b: A) => boolean): 表<A> {
     return this.表映射((x) => x.sort((a, b) => (f(a, b) ? 1 : -1)) as any) as any
   }
-  表去重<B extends keyof A>(列们: B[]): 表<A> {
+  去重<B extends keyof A>(列们: B[]): 表<A> {
     const 新表: 表<A> = new 表([])
     for (const 行 of this.data) {
       const 重复 = 新表.data.some((已有行) => 列们.every((列) => 行[列] === 已有行[列]))

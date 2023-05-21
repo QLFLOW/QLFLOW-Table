@@ -3,7 +3,7 @@ import * as path from 'path'
 import { 表 } from '../src/index'
 
 describe('表测试', () => {
-  it('表_创建表', () => {
+  it('创建表', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -12,17 +12,17 @@ describe('表测试', () => {
     const createdTable = 表.创建表(tableData)
     expect(createdTable.取表数据()).to.deep.equal(tableData)
   })
-  it('表_创建行表', () => {
+  it('创建行表', () => {
     let tableData = [{ id: 1, name: 'Alice', age: 25 }]
     const createdTable = 表.创建行表(['id', 'name', 'age'], [1, 'Alice', 25])
     expect(createdTable.取表数据()).to.deep.equal(tableData)
   })
-  it('表_创建列表', () => {
+  it('创建列表', () => {
     let tableData = [{ id: 1 }, { id: 2 }, { id: 3 }]
     const createdTable = 表.创建列表([1, 2, 3], 'id')
     expect(createdTable.取表数据()).to.deep.equal(tableData)
   })
-  it('表_从xlsx创建表', () => {
+  it('从xlsx创建表', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -33,7 +33,7 @@ describe('表测试', () => {
     )
     expect(createdTable.取表数据()).to.deep.equal(tableData)
   })
-  it('表_创建高维表', () => {
+  it('创建高维表', () => {
     const createdTable = 表.创建表([
       { id: 1, data: 表.创建表([{ name: 'Alice', age: 25 }]) },
       { id: 2, data: 表.创建表([{ name: 'Bob', age: 30 }]) },
@@ -41,7 +41,7 @@ describe('表测试', () => {
     ])
     expect(createdTable.取列数据('data')[1].取表数据()).to.deep.equal([{ name: 'Bob', age: 30 }])
   })
-  it('表_取行数据', () => {
+  it('取行数据', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -51,7 +51,7 @@ describe('表测试', () => {
     const rowData = table.取行数据(1)
     expect(rowData).to.deep.equal([2, 'Bob', 30])
   })
-  it('表_取行数据(越界)', () => {
+  it('取行数据(越界)', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -61,7 +61,7 @@ describe('表测试', () => {
     const rowData = table.取行数据(999)
     expect(rowData).to.deep.equal(null)
   })
-  it('表_取列数据', () => {
+  it('取列数据', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -71,7 +71,7 @@ describe('表测试', () => {
     const columnData = table.取列数据('name')
     expect(columnData).to.deep.equal(['Alice', 'Bob', 'Charlie'])
   })
-  it('表_取表数据', () => {
+  it('取表数据', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -81,7 +81,7 @@ describe('表测试', () => {
     const tableDataResult = table.取表数据()
     expect(tableDataResult).to.deep.equal(tableData)
   })
-  it('表_取表矩阵数据', () => {
+  it('取表矩阵数据', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -95,7 +95,7 @@ describe('表测试', () => {
       [3, 'Charlie', 35],
     ])
   })
-  it('表_取行数', () => {
+  it('取行数', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -104,7 +104,7 @@ describe('表测试', () => {
     let table = 表.创建表(tableData)
     expect(table.取行数()).to.deep.equal(3)
   })
-  it('表_取列数', () => {
+  it('取列数', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -113,7 +113,7 @@ describe('表测试', () => {
     let table = 表.创建表(tableData)
     expect(table.取列数()).to.deep.equal(3)
   })
-  it('表_取列名们', () => {
+  it('取列名们', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -122,7 +122,7 @@ describe('表测试', () => {
     let table = 表.创建表(tableData)
     expect(table.取列名们()).to.deep.equal(['id', 'name', 'age'])
   })
-  it('表_取行', () => {
+  it('取行', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -132,7 +132,7 @@ describe('表测试', () => {
     const row = table.取行([0])
     expect(row.取表数据()).to.deep.equal([{ id: 1, name: 'Alice', age: 25 }])
   })
-  it('表_取列', () => {
+  it('取列', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -142,7 +142,7 @@ describe('表测试', () => {
     const column = table.取列(['name'])
     expect(column.取表数据()).to.deep.equal([{ name: 'Alice' }, { name: 'Bob' }, { name: 'Charlie' }])
   })
-  it('表_表并接', () => {
+  it('表并接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -157,7 +157,7 @@ describe('表测试', () => {
     ])
     expect(mergedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_左连接', () => {
+  it('左连接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -183,7 +183,7 @@ describe('表测试', () => {
     ])
     expect(joinedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_右连接', () => {
+  it('右连接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -209,7 +209,7 @@ describe('表测试', () => {
     ])
     expect(joinedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_全连接', () => {
+  it('全连接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -236,7 +236,7 @@ describe('表测试', () => {
     ])
     expect(joinedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_内连接', () => {
+  it('内连接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -261,7 +261,7 @@ describe('表测试', () => {
     ])
     expect(joinedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_合并', () => {
+  it('合并', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -275,7 +275,22 @@ describe('表测试', () => {
     ])
     expect(appendedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_筛选', () => {
+  it('切分', () => {
+    const table1 = 表.创建表([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+      { id: 3, name: 'Charlie' },
+    ])
+    const [t1, t2] = table1.切分(1)
+    const expectedTable1 = 表.创建表([{ id: 1, name: 'Alice' }])
+    const expectedTable2 = 表.创建表([
+      { id: 2, name: 'Bob' },
+      { id: 3, name: 'Charlie' },
+    ])
+    expect(t1.取表数据()).to.deep.equal(expectedTable1.取表数据())
+    expect(t2.取表数据()).to.deep.equal(expectedTable2.取表数据())
+  })
+  it('筛选', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -286,7 +301,7 @@ describe('表测试', () => {
     const expectedTable = 表.创建表([{ id: 3, name: 'Charlie', age: 35 }])
     expect(filteredTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_行映射', () => {
+  it('行映射', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -304,7 +319,7 @@ describe('表测试', () => {
     ])
     expect(mappedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_分组', () => {
+  it('分组', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -320,7 +335,7 @@ describe('表测试', () => {
     expect(expectedTable1.取表数据()).to.deep.equal(分组[0].取表数据())
     expect(expectedTable2.取表数据()).to.deep.equal(分组[1].取表数据())
   })
-  it('表_交叉分组', () => {
+  it('交叉分组', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -339,7 +354,7 @@ describe('表测试', () => {
     expect(expectedTable1.取表数据()).to.deep.equal(分组[0].取表数据())
     expect(expectedTable2.取表数据()).to.deep.equal(分组[1].取表数据())
   })
-  it('表_交叉归类', () => {
+  it('交叉归类', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -358,7 +373,7 @@ describe('表测试', () => {
     expect(expectedTable1.取表数据()).to.deep.equal(分组.a.取表数据())
     expect(expectedTable2.取表数据()).to.deep.equal(分组.b.取表数据())
   })
-  it('表_删除列', () => {
+  it('删除列', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -373,7 +388,7 @@ describe('表测试', () => {
     ])
     expect(tableWithoutColumn.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_列改名', () => {
+  it('列改名', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -388,7 +403,7 @@ describe('表测试', () => {
     ])
     expect(tableWithoutColumn.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_列映射', () => {
+  it('列映射', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -403,7 +418,7 @@ describe('表测试', () => {
     ])
     expect(mappedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_表映射', () => {
+  it('表映射', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
@@ -418,15 +433,15 @@ describe('表测试', () => {
     ])
     expect(mappedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
-  it('表_表排序', () => {
+  it('表排序', () => {
     let tableData = [
       { id: 2, name: 'Bob', age: 30 },
       { id: 1, name: 'Alice', age: 25 },
       { id: 3, name: 'Charlie', age: 35 },
     ]
     let table = 表.创建表(tableData)
-    const mappedTable1 = table.表排序((a, b) => b.id > a.id)
-    const mappedTable2 = table.表排序((a, b) => a.id > b.id)
+    const mappedTable1 = table.排序((a, b) => b.id > a.id)
+    const mappedTable2 = table.排序((a, b) => a.id > b.id)
     const expectedTable1 = 表.创建表([
       { id: 3, name: 'Charlie', age: 35 },
       { id: 2, name: 'Bob', age: 30 },
@@ -440,14 +455,14 @@ describe('表测试', () => {
     expect(mappedTable1.取表数据()).to.deep.equal(expectedTable1.取表数据())
     expect(mappedTable2.取表数据()).to.deep.equal(expectedTable2.取表数据())
   })
-  it('表_表去重', () => {
+  it('表去重', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
       { id: 3, name: 'Alice', age: 25 },
     ]
     let table = 表.创建表(tableData)
-    const mappedTable = table.表去重(['name', 'age'])
+    const mappedTable = table.去重(['name', 'age'])
     const expectedTable = 表.创建表([
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
