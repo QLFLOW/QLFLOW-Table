@@ -334,9 +334,9 @@ export class 表<A extends {}> {
     return this.取行(保留的)
   }
   行映射<C extends _C, _C extends {} = 创建表_类型检查<C>>(函数: (a: A) => C): 表<C> {
-    var 新表 = 深克隆(this) as any
-    新表.data = 新表.data.map(函数)
-    return 新表
+    var 新数据 = 深克隆(this.data) as any
+    新数据 = 新数据.map(函数)
+    return new 表(新数据)
   }
 
   分组<F extends ((x: A) => boolean)[]>(函数们: [...F]): 固定映射<[...F], 表<A>> {
