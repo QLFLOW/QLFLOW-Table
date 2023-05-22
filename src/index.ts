@@ -158,23 +158,30 @@ export class 表<A extends {}> {
     )
   }
 
-  插入(data: A, 位置: number = -1): 表<A> {
-    var 新表 = new 表(深克隆(this.data))
-    var 位置 = 位置 % (新表.data.length + 1)
-    if (位置 < 0) 位置 += 新表.data.length + 1
-    var 前 = 新表.data.slice(0, 位置)
-    var 后 = 新表.data.slice(位置)
-    新表.data = [...前, data, ...后]
+  插入行(data: A, 位置: number = -1): 表<A> {
+    var 位置 = 位置 % (this.data.length + 1)
+    if (位置 < 0) 位置 += this.data.length + 1
+    var 前 = this.data.slice(0, 位置)
+    var 后 = this.data.slice(位置)
+    var 新表 = new 表([...前, 深克隆(data), ...后])
     return 新表
   }
-  批量插入(data: A[], 位置: number = -1): 表<A> {
-    var 新表 = new 表(深克隆(this.data))
-    var 位置 = 位置 % (新表.data.length + 1)
-    if (位置 < 0) 位置 += 新表.data.length + 1
-    var 前 = 新表.data.slice(0, 位置)
-    var 后 = 新表.data.slice(位置)
-    新表.data = [...前, ...data, ...后]
+  批量插入行(data: A[], 位置: number = -1): 表<A> {
+    var 位置 = 位置 % (this.data.length + 1)
+    if (位置 < 0) 位置 += this.data.length + 1
+    var 前 = this.data.slice(0, 位置)
+    var 后 = this.data.slice(位置)
+    var 新表 = new 表([...前, ...深克隆(data), ...后])
     return 新表
+  }
+  插入列<C extends 基础类型, B extends _B, _B extends string = B extends keyof A ? never : B>(
+    列名: B,
+    data: C[],
+  ): 表<A & Record<B, C>> {
+    if (this.data.length != data.length) throw new Error('插入的列长度必须与表长度相等')
+    var 输入数据 = 深克隆(data)
+    var 新数据 = this.data.map((a, i) => ({ ...a, [列名]: 输入数据[i] }))
+    return new 表(新数据) as any
   }
 
   并接<B extends {}>(b: 表<B>): 表<加前缀<A, 'A_'> & 加前缀<B, 'B_'>> {
@@ -357,8 +364,7 @@ export class 表<A extends {}> {
     return this.取行(保留的)
   }
   行映射<C extends _C, _C extends {} = 创建表_类型检查<C>>(函数: (a: A) => C): 表<C> {
-    var 新数据 = 深克隆(this.data) as any
-    新数据 = 新数据.map(函数)
+    var 新数据: any = this.data.map(函数)
     return new 表(新数据)
   }
 
@@ -369,7 +375,7 @@ export class 表<A extends {}> {
     for (var 行数据 of 数据) {
       for (var i = 0; i < 函数们.length; i++) {
         var 当前函数 = 函数们[i]
-        if (当前函数(深克隆(行数据))) {
+        if (当前函数(行数据)) {
           结果[i].data.push(深克隆(行数据))
           break
         }
@@ -384,7 +390,7 @@ export class 表<A extends {}> {
     for (var 行数据 of 数据) {
       for (var i = 0; i < 函数们.length; i++) {
         var 当前函数 = 函数们[i]
-        if (当前函数(深克隆(行数据))) {
+        if (当前函数(行数据)) {
           结果[i].data.push(深克隆(行数据))
         }
       }
@@ -402,7 +408,7 @@ export class 表<A extends {}> {
     for (var 行数据 of 数据) {
       for (var k of key们) {
         var 当前函数 = 函数[k]
-        if (当前函数(深克隆(行数据))) {
+        if (当前函数(行数据)) {
           结果[k].data.push(深克隆(行数据))
         }
       }
@@ -440,7 +446,7 @@ export class 表<A extends {}> {
     for (const 行 of this.data) {
       const 新行 = 深克隆(行) as any
       delete 新行.列名
-      新行[列名] = f(行[列名])
+      新行[列名] = f(新行[列名])
       结果.data.push(新行)
     }
     return 结果

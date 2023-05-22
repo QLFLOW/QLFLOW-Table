@@ -148,21 +148,21 @@ describe('表测试', () => {
     expect(column.取表数据()).to.deep.equal([{ name: 'Alice' }, { name: 'Bob' }, { name: 'Charlie' }])
   })
 
-  it('插入', () => {
+  it('插入行', () => {
     let tableData = [{ id: 1 }, { id: 2 }]
     let table = 表.创建表(tableData)
-    const data01 = table.插入({ id: 3 }, -5)
-    const data02 = table.插入({ id: 3 }, -4)
-    const data03 = table.插入({ id: 3 }, -3)
-    const data04 = table.插入({ id: 3 }, -2)
-    const data05 = table.插入({ id: 3 }, -1)
-    const data06 = table.插入({ id: 3 }, 0)
-    const data07 = table.插入({ id: 3 }, 1)
-    const data08 = table.插入({ id: 3 }, 2)
-    const data09 = table.插入({ id: 3 }, 3)
-    const data10 = table.插入({ id: 3 }, 4)
-    const data11 = table.插入({ id: 3 }, 5)
-    const data12 = table.插入({ id: 3 })
+    const data01 = table.插入行({ id: 3 }, -5)
+    const data02 = table.插入行({ id: 3 }, -4)
+    const data03 = table.插入行({ id: 3 }, -3)
+    const data04 = table.插入行({ id: 3 }, -2)
+    const data05 = table.插入行({ id: 3 }, -1)
+    const data06 = table.插入行({ id: 3 }, 0)
+    const data07 = table.插入行({ id: 3 }, 1)
+    const data08 = table.插入行({ id: 3 }, 2)
+    const data09 = table.插入行({ id: 3 }, 3)
+    const data10 = table.插入行({ id: 3 }, 4)
+    const data11 = table.插入行({ id: 3 }, 5)
+    const data12 = table.插入行({ id: 3 })
     expect(data01.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 2 }])
     expect(data02.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
     expect(data03.取表数据()).to.deep.equal([{ id: 3 }, { id: 1 }, { id: 2 }])
@@ -176,21 +176,21 @@ describe('表测试', () => {
     expect(data11.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
     expect(data12.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
   })
-  it('批量插入', () => {
+  it('批量插入行', () => {
     let tableData = [{ id: 1 }, { id: 2 }]
     let table = 表.创建表(tableData)
-    const data01 = table.批量插入([{ id: 3 }, { id: 4 }], -5)
-    const data02 = table.批量插入([{ id: 3 }, { id: 4 }], -4)
-    const data03 = table.批量插入([{ id: 3 }, { id: 4 }], -3)
-    const data04 = table.批量插入([{ id: 3 }, { id: 4 }], -2)
-    const data05 = table.批量插入([{ id: 3 }, { id: 4 }], -1)
-    const data06 = table.批量插入([{ id: 3 }, { id: 4 }], 0)
-    const data07 = table.批量插入([{ id: 3 }, { id: 4 }], 1)
-    const data08 = table.批量插入([{ id: 3 }, { id: 4 }], 2)
-    const data09 = table.批量插入([{ id: 3 }, { id: 4 }], 3)
-    const data10 = table.批量插入([{ id: 3 }, { id: 4 }], 4)
-    const data11 = table.批量插入([{ id: 3 }, { id: 4 }], 5)
-    const data12 = table.批量插入([{ id: 3 }, { id: 4 }])
+    const data01 = table.批量插入行([{ id: 3 }, { id: 4 }], -5)
+    const data02 = table.批量插入行([{ id: 3 }, { id: 4 }], -4)
+    const data03 = table.批量插入行([{ id: 3 }, { id: 4 }], -3)
+    const data04 = table.批量插入行([{ id: 3 }, { id: 4 }], -2)
+    const data05 = table.批量插入行([{ id: 3 }, { id: 4 }], -1)
+    const data06 = table.批量插入行([{ id: 3 }, { id: 4 }], 0)
+    const data07 = table.批量插入行([{ id: 3 }, { id: 4 }], 1)
+    const data08 = table.批量插入行([{ id: 3 }, { id: 4 }], 2)
+    const data09 = table.批量插入行([{ id: 3 }, { id: 4 }], 3)
+    const data10 = table.批量插入行([{ id: 3 }, { id: 4 }], 4)
+    const data11 = table.批量插入行([{ id: 3 }, { id: 4 }], 5)
+    const data12 = table.批量插入行([{ id: 3 }, { id: 4 }])
     expect(data01.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 4 }, { id: 2 }])
     expect(data02.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
     expect(data03.取表数据()).to.deep.equal([{ id: 3 }, { id: 4 }, { id: 1 }, { id: 2 }])
@@ -203,6 +203,24 @@ describe('表测试', () => {
     expect(data10.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 4 }, { id: 2 }])
     expect(data11.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
     expect(data12.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+  })
+  it('插入列', () => {
+    let tableData = [{ id: 1 }, { id: 2 }]
+    let table = 表.创建表(tableData).插入列('name', ['Alice', 'Bob'])
+    expect(table.取表数据()).to.deep.equal([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ])
+  })
+  it('插入列(异常)', () => {
+    let tableData = [{ id: 1 }, { id: 2 }]
+    try {
+      表.创建表(tableData).插入列('name', ['Alice'])
+    } catch (e) {
+      if (String(e) != 'Error: 插入的列长度必须与表长度相等') throw new Error('非预期')
+      return
+    }
+    throw new Error('非预期')
   })
 
   it('并接', () => {
