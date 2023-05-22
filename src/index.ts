@@ -315,17 +315,17 @@ export class 表<A extends {}> {
   }
 
   合并(b: 表<A>): 表<A> {
-    const 结果: 表<A> = new 表([...深克隆(this.data), ...深克隆(b.data)])
+    const 结果: 表<A> = new 表([...this.data, ...b.data])
     return 结果
   }
   切分(n: number): [表<A>, 表<A>] {
-    var 数据 = 深克隆(this.data)
+    var 数据 = this.data
     var 数据1 = 数据.slice(0, n)
     var 数据2 = 数据.slice(n)
     return [new 表(数据1), new 表(数据2)]
   }
   截取(n: number): 表<A> {
-    var 数据 = 深克隆(this.data)
+    var 数据 = this.data
     var 数据1 = 数据.slice(0, n)
     return new 表(数据1)
   }
