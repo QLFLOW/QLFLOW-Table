@@ -205,7 +205,7 @@ describe('表测试', () => {
     expect(data12.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
   })
 
-  it('表并接', () => {
+  it('并接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
@@ -219,6 +219,21 @@ describe('表测试', () => {
       { A_id: 3, A_name: 'Charlie', B_age: 35 },
     ])
     expect(mergedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
+  })
+  it('并接(异常)', () => {
+    const table1 = 表.创建表([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+      { id: 3, name: 'Charlie' },
+    ])
+    const table2 = 表.创建表([{ age: 25 }, { age: 30 }])
+    try {
+      const mergedTable = table1.并接(table2)
+    } catch (e) {
+      if (String(e) != 'Error: 只有列数相等的表才可以拼接') throw new Error('非预期')
+      return
+    }
+    throw new Error('非预期')
   })
   it('左连接', () => {
     const table1 = 表.创建表([

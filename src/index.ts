@@ -178,6 +178,7 @@ export class 表<A extends {}> {
   }
 
   并接<B extends {}>(b: 表<B>): 表<加前缀<A, 'A_'> & 加前缀<B, 'B_'>> {
+    if (this.data.length != b.data.length) throw new Error('只有列数相等的表才可以拼接')
     var 行们: any = []
     for (var i = 0; i < Math.max(this.data.length, b.data.length); i++) {
       var 行: any = {}
