@@ -145,7 +145,7 @@ export class 表<A extends {}> {
   取列数(): number {
     return Object.keys(this.data[0]).length
   }
-  取列名们(): string[] {
+  取列名(): string[] {
     return Object.keys(this.data[0])
   }
 
@@ -156,6 +156,25 @@ export class 表<A extends {}> {
     return new 表(
       this.data.map((x) => 列名.map((n) => ({ [n]: x[n] })).reduce((s, a) => Object.assign(s, a), {})) as any,
     )
+  }
+
+  插入(data: A, 位置: number = -1): 表<A> {
+    var 新表 = new 表(深克隆(this.data))
+    var 位置 = 位置 % (新表.data.length + 1)
+    if (位置 < 0) 位置 += 新表.data.length + 1
+    var 前 = 新表.data.slice(0, 位置)
+    var 后 = 新表.data.slice(位置)
+    新表.data = [...前, data, ...后]
+    return 新表
+  }
+  批量插入(data: A[], 位置: number = -1): 表<A> {
+    var 新表 = new 表(深克隆(this.data))
+    var 位置 = 位置 % (新表.data.length + 1)
+    if (位置 < 0) 位置 += 新表.data.length + 1
+    var 前 = 新表.data.slice(0, 位置)
+    var 后 = 新表.data.slice(位置)
+    新表.data = [...前, ...data, ...后]
+    return 新表
   }
 
   并接<B extends {}>(b: 表<B>): 表<加前缀<A, 'A_'> & 加前缀<B, 'B_'>> {

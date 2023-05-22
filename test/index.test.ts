@@ -118,14 +118,14 @@ describe('表测试', () => {
     let table = 表.创建表(tableData)
     expect(table.取列数()).to.deep.equal(3)
   })
-  it('取列名们', () => {
+  it('取列名', () => {
     let tableData = [
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 30 },
       { id: 3, name: 'Charlie', age: 35 },
     ]
     let table = 表.创建表(tableData)
-    expect(table.取列名们()).to.deep.equal(['id', 'name', 'age'])
+    expect(table.取列名()).to.deep.equal(['id', 'name', 'age'])
   })
   it('取行', () => {
     let tableData = [
@@ -147,6 +147,64 @@ describe('表测试', () => {
     const column = table.取列(['name'])
     expect(column.取表数据()).to.deep.equal([{ name: 'Alice' }, { name: 'Bob' }, { name: 'Charlie' }])
   })
+
+  it('插入', () => {
+    let tableData = [{ id: 1 }, { id: 2 }]
+    let table = 表.创建表(tableData)
+    const data01 = table.插入({ id: 3 }, -5)
+    const data02 = table.插入({ id: 3 }, -4)
+    const data03 = table.插入({ id: 3 }, -3)
+    const data04 = table.插入({ id: 3 }, -2)
+    const data05 = table.插入({ id: 3 }, -1)
+    const data06 = table.插入({ id: 3 }, 0)
+    const data07 = table.插入({ id: 3 }, 1)
+    const data08 = table.插入({ id: 3 }, 2)
+    const data09 = table.插入({ id: 3 }, 3)
+    const data10 = table.插入({ id: 3 }, 4)
+    const data11 = table.插入({ id: 3 }, 5)
+    const data12 = table.插入({ id: 3 })
+    expect(data01.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 2 }])
+    expect(data02.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
+    expect(data03.取表数据()).to.deep.equal([{ id: 3 }, { id: 1 }, { id: 2 }])
+    expect(data04.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 2 }])
+    expect(data05.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
+    expect(data06.取表数据()).to.deep.equal([{ id: 3 }, { id: 1 }, { id: 2 }])
+    expect(data07.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 2 }])
+    expect(data08.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
+    expect(data09.取表数据()).to.deep.equal([{ id: 3 }, { id: 1 }, { id: 2 }])
+    expect(data10.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 2 }])
+    expect(data11.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
+    expect(data12.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }])
+  })
+  it('批量插入', () => {
+    let tableData = [{ id: 1 }, { id: 2 }]
+    let table = 表.创建表(tableData)
+    const data01 = table.批量插入([{ id: 3 }, { id: 4 }], -5)
+    const data02 = table.批量插入([{ id: 3 }, { id: 4 }], -4)
+    const data03 = table.批量插入([{ id: 3 }, { id: 4 }], -3)
+    const data04 = table.批量插入([{ id: 3 }, { id: 4 }], -2)
+    const data05 = table.批量插入([{ id: 3 }, { id: 4 }], -1)
+    const data06 = table.批量插入([{ id: 3 }, { id: 4 }], 0)
+    const data07 = table.批量插入([{ id: 3 }, { id: 4 }], 1)
+    const data08 = table.批量插入([{ id: 3 }, { id: 4 }], 2)
+    const data09 = table.批量插入([{ id: 3 }, { id: 4 }], 3)
+    const data10 = table.批量插入([{ id: 3 }, { id: 4 }], 4)
+    const data11 = table.批量插入([{ id: 3 }, { id: 4 }], 5)
+    const data12 = table.批量插入([{ id: 3 }, { id: 4 }])
+    expect(data01.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 4 }, { id: 2 }])
+    expect(data02.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+    expect(data03.取表数据()).to.deep.equal([{ id: 3 }, { id: 4 }, { id: 1 }, { id: 2 }])
+    expect(data04.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 4 }, { id: 2 }])
+    expect(data05.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+    expect(data06.取表数据()).to.deep.equal([{ id: 3 }, { id: 4 }, { id: 1 }, { id: 2 }])
+    expect(data07.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 4 }, { id: 2 }])
+    expect(data08.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+    expect(data09.取表数据()).to.deep.equal([{ id: 3 }, { id: 4 }, { id: 1 }, { id: 2 }])
+    expect(data10.取表数据()).to.deep.equal([{ id: 1 }, { id: 3 }, { id: 4 }, { id: 2 }])
+    expect(data11.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+    expect(data12.取表数据()).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+  })
+
   it('表并接', () => {
     const table1 = 表.创建表([
       { id: 1, name: 'Alice' },
