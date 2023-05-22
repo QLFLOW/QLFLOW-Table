@@ -102,7 +102,7 @@ function 深克隆<T>(obj: T): T {
 
 export class 表<A extends {}> {
   private constructor(private data: A[]) {}
-  static 创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]) {
+  static 创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]): 表<A> {
     return new 表(data)
   }
   static 创建行表<A extends _A, B extends (string | number)[], _A extends 基础类型[] = 表_创建行表<A, B>>(
@@ -136,13 +136,13 @@ export class 表<A extends {}> {
     return 深克隆(this.data).map((a) => 列.map((x) => a[x])) as any
   }
 
-  取行数() {
+  取行数(): number {
     return this.data.length
   }
-  取列数() {
+  取列数(): number {
     return Object.keys(this.data[0]).length
   }
-  取列名们() {
+  取列名们(): string[] {
     return Object.keys(this.data[0])
   }
 
@@ -329,7 +329,7 @@ export class 表<A extends {}> {
     var 数据1 = 数据.slice(0, n)
     return new 表(数据1)
   }
-  筛选(条件: (a: A) => boolean) {
+  筛选(条件: (a: A) => boolean): 表<A> {
     var 保留的 = this.data.map((x, i) => (条件(x) ? i : -1)).filter((a) => a != -1)
     return this.取行(保留的)
   }
@@ -423,7 +423,7 @@ export class 表<A extends {}> {
     return 结果
   }
 
-  表映射<B extends _B, _B extends {} = 创建表_类型检查<B>>(f: (a: A[]) => B[]) {
+  表映射<B extends _B, _B extends {} = 创建表_类型检查<B>>(f: (a: A[]) => B[]): 表<B> {
     var 新表 = 深克隆(this)
     var 新结果 = f(新表.data)
     return new 表(新结果)
