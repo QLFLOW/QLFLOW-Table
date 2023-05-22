@@ -396,7 +396,7 @@ export class 表<A extends {}> {
     }
     return 结果
   }
-  列改名<C extends keyof A, N extends _C, _C extends string = 表_列改名_类型约束<A, N>>(
+  列改名<C extends keyof A, N extends _N, _N extends string = 表_列改名_类型约束<A, N>>(
     列名: C,
     新列名: N,
   ): 表<Omit<A, C> & Record<N, A[C]>> {
