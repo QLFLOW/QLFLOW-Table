@@ -12,6 +12,11 @@ describe('表测试', () => {
     const createdTable = 表.创建表(tableData)
     expect(createdTable.取表数据()).to.deep.equal(tableData)
   })
+  it('创建空表', () => {
+    let tableData: unknown[] = []
+    const createdTable = 表.创建空表()
+    expect(createdTable.取表数据()).to.deep.equal(tableData)
+  })
   it('创建行表', () => {
     let tableData = [{ id: 1, name: 'Alice', age: 25 }]
     const createdTable = 表.创建行表(['id', 'name', 'age'], [1, 'Alice', 25])

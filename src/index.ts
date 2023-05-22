@@ -105,6 +105,9 @@ export class 表<A extends {}> {
   static 创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]): 表<A> {
     return new 表(data)
   }
+  static 创建空表<A extends B, B extends {} = 创建表_类型检查<A>>(): 表<A> {
+    return new 表([])
+  }
   static 创建行表<A extends _A, B extends (string | number)[], _A extends 基础类型[] = 表_创建行表<A, B>>(
     列名: [...B],
     data: [...A],
