@@ -103,7 +103,7 @@ function 深克隆<T>(obj: T): T {
 export class 表<A extends {}> {
   private constructor(private data: A[]) {}
   static 创建表<A extends B, B extends {} = 创建表_类型检查<A>>(data: A[]): 表<A> {
-    return new 表(data)
+    return new 表(深克隆(data))
   }
   static 创建空表<A extends B, B extends {} = 创建表_类型检查<A>>(): 表<A> {
     return new 表([])
@@ -360,11 +360,11 @@ export class 表<A extends {}> {
     return new 表(数据1)
   }
   筛选(条件: (a: A) => boolean): 表<A> {
-    var 保留的 = this.data.map((x, i) => (条件(x) ? i : -1)).filter((a) => a != -1)
+    var 保留的 = this.data.map((x, i) => (条件(深克隆(x)) ? i : -1)).filter((a) => a != -1)
     return this.取行(保留的)
   }
   行映射<C extends _C, _C extends {} = 创建表_类型检查<C>>(函数: (a: A) => C): 表<C> {
-    var 新数据: any = this.data.map(函数)
+    var 新数据: any = 深克隆(this.data).map((a) => 深克隆(函数(a)))
     return new 表(新数据)
   }
 
@@ -375,7 +375,7 @@ export class 表<A extends {}> {
     for (var 行数据 of 数据) {
       for (var i = 0; i < 函数们.length; i++) {
         var 当前函数 = 函数们[i]
-        if (当前函数(行数据)) {
+        if (当前函数(深克隆(行数据))) {
           结果[i].data.push(深克隆(行数据))
           break
         }
@@ -390,7 +390,7 @@ export class 表<A extends {}> {
     for (var 行数据 of 数据) {
       for (var i = 0; i < 函数们.length; i++) {
         var 当前函数 = 函数们[i]
-        if (当前函数(行数据)) {
+        if (当前函数(深克隆(行数据))) {
           结果[i].data.push(深克隆(行数据))
         }
       }
@@ -408,7 +408,7 @@ export class 表<A extends {}> {
     for (var 行数据 of 数据) {
       for (var k of key们) {
         var 当前函数 = 函数[k]
-        if (当前函数(行数据)) {
+        if (当前函数(深克隆(行数据))) {
           结果[k].data.push(深克隆(行数据))
         }
       }
@@ -446,20 +446,19 @@ export class 表<A extends {}> {
     for (const 行 of this.data) {
       const 新行 = 深克隆(行) as any
       delete 新行.列名
-      新行[列名] = f(新行[列名])
+      新行[列名] = 深克隆(f(深克隆(新行[列名])))
       结果.data.push(新行)
     }
     return 结果
   }
 
   表映射<B extends _B, _B extends {} = 创建表_类型检查<B>>(f: (a: A[]) => B[]): 表<B> {
-    var 新表 = 深克隆(this)
-    var 新结果 = f(新表.data)
+    var 新结果 = 深克隆(f(深克隆(this.data)))
     return new 表(新结果)
   }
 
   排序(f: (a: A, b: A) => boolean): 表<A> {
-    return this.表映射((x) => x.sort((a, b) => (f(a, b) ? 1 : -1)) as any) as any
+    return this.表映射((x) => x.sort((a, b) => (f(深克隆(a), 深克隆(b)) ? 1 : -1)) as any) as any
   }
   去重<B extends keyof A>(列们: B[]): 表<A> {
     const 新表: 表<A> = new 表([])
