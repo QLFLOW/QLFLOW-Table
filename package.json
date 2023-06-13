@@ -6,7 +6,6 @@
     "require": "./dist/cjs/index.cjs",
     "import": "./dist/esm/index.js"
   },
-  "type": "module",
   "files": [
     "/dist/*"
   ],
