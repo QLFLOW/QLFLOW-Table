@@ -1,9 +1,9 @@
 {
   "name": "@qlflow/table",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "main": "dist/esm/index.js",
   "exports": {
-    "require": "./dist/cjs/index.cjs",
+    "require": "./dist/cjs/index.js",
     "import": "./dist/esm/index.js"
   },
   "files": [
