@@ -578,4 +578,15 @@ describe('表测试', () => {
     ])
     expect(mappedTable.取表数据()).to.deep.equal(expectedTable.取表数据())
   })
+  it('存为xlsx', async () => {
+    let tableData = [
+      { id: 1, name: 'Alice', age: 25 },
+      { id: 2, name: 'Bob', age: 30 },
+      { id: 3, name: 'Alice', age: 25 },
+    ]
+    let table1 = 表.创建表(tableData)
+    await table1.存为xlsx(path.resolve(__dirname, './file2.xlsx'))
+    let table2 = 表.从xlsx创建表(path.resolve(__dirname, './file2.xlsx'))
+    expect(table1.取表数据()).to.deep.equal(table2.取表数据())
+  })
 })

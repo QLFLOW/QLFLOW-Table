@@ -468,4 +468,10 @@ export class 表<A extends {}> {
     }
     return 新表
   }
+  async 存为xlsx(路径: string): Promise<void> {
+    const workbook = XLSX.utils.book_new()
+    const worksheet = XLSX.utils.aoa_to_sheet([this.取列名(), ...this.取表矩阵数据(this.取列名() as any)])
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+    XLSX.writeFile(workbook, 路径)
+  }
 }
