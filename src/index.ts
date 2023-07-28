@@ -143,9 +143,11 @@ export class 表<A extends {}> {
     return this.data.length
   }
   取列数(): number {
+    if (this.data[0] == null) return 0
     return Object.keys(this.data[0]).length
   }
   取列名(): string[] {
+    if (this.data[0] == null) return []
     return Object.keys(this.data[0])
   }
 

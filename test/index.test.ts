@@ -34,7 +34,7 @@ describe('表测试', () => {
       { id: 3, name: 'Charlie', age: 35 },
     ]
     const createdTable = 表.从xlsx创建表<{ id: number; name: string; age: number }>(
-      path.resolve(__dirname, './file.xlsx'),
+      path.resolve(__dirname, './file1.xlsx'),
     )
     expect(createdTable.取表数据()).to.deep.equal(tableData)
   })
@@ -115,8 +115,10 @@ describe('表测试', () => {
       { id: 2, name: 'Bob', age: 30 },
       { id: 3, name: 'Charlie', age: 35 },
     ]
-    let table = 表.创建表(tableData)
-    expect(table.取列数()).to.deep.equal(3)
+    let table1 = 表.创建表(tableData)
+    expect(table1.取列数()).to.deep.equal(3)
+    let table2 = 表.创建表<{}>([])
+    expect(table2.取列数()).to.deep.equal(0)
   })
   it('取列名', () => {
     let tableData = [
@@ -124,8 +126,10 @@ describe('表测试', () => {
       { id: 2, name: 'Bob', age: 30 },
       { id: 3, name: 'Charlie', age: 35 },
     ]
-    let table = 表.创建表(tableData)
-    expect(table.取列名()).to.deep.equal(['id', 'name', 'age'])
+    let table1 = 表.创建表(tableData)
+    expect(table1.取列名()).to.deep.equal(['id', 'name', 'age'])
+    let table2 = 表.创建表<{}>([])
+    expect(table2.取列名()).to.deep.equal([])
   })
   it('取行', () => {
     let tableData = [
@@ -587,6 +591,12 @@ describe('表测试', () => {
     let table1 = 表.创建表(tableData)
     await table1.存为xlsx(path.resolve(__dirname, './file2.xlsx'))
     let table2 = 表.从xlsx创建表(path.resolve(__dirname, './file2.xlsx'))
+    expect(table1.取表数据()).to.deep.equal(table2.取表数据())
+  })
+  it('存为xlsx_空表', async () => {
+    let table1 = 表.创建表<{ id: number; name: string }>([])
+    await table1.存为xlsx(path.resolve(__dirname, './file3.xlsx'))
+    let table2 = 表.从xlsx创建表(path.resolve(__dirname, './file3.xlsx'))
     expect(table1.取表数据()).to.deep.equal(table2.取表数据())
   })
 })
