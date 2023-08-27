@@ -1,13 +1,13 @@
 {
   "name": "@qlflow/table",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "main": "dist/esm/index.mjs",
   "exports": {
     "require": "./dist/cjs/index.js",
     "import": "./dist/esm/index.mjs"
   },
   "files": [
-    "/dist/*"
+    "/dist/**/*"
   ],
   "scripts": {
     "pub": "npm run build && npm run test && npm publish --access=public",
@@ -33,7 +33,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@lsby/ts_type_fun": "^0.0.15",
+    "@lsby/ts_type_fun": "^0.0.17",
     "ramda": "^0.29.0",
     "xlsx": "^0.18.5"
   }
